@@ -1,0 +1,645 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>化碳博物館 | 立體卡片圖鑑</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            user-select: none;
+        }
+
+        /* ========= 夢幻背景：柔光星河 ========= */
+        body {
+            min-height: 100vh;
+            font-family: 'Poppins', 'Segoe UI', 'Roboto', system-ui, sans-serif;
+            background: radial-gradient(circle at 10% 20%, #e2ecf7, #cbdbe9, #b1c2d9);
+            background-attachment: fixed;
+            position: relative;
+            padding: 2rem 2rem 3rem;
+            cursor: default;
+        }
+        /* 夢幻光點裝飾 */
+        body::before {
+            content: "";
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: radial-gradient(circle at 30% 60%, rgba(255,245,210,0.6) 1.8px, transparent 1.8px);
+            background-size: 48px 48px;
+            pointer-events: none;
+            z-index: 0;
+        }
+        body::after {
+            content: "";
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(ellipse at 70% 40%, rgba(245,235,200,0.25), transparent 70%);
+            pointer-events: none;
+        }
+
+        .gallery-header {
+            text-align: center;
+            margin-bottom: 2.5rem;
+            position: relative;
+            z-index: 2;
+        }
+        .gallery-header h1 {
+            font-size: 3rem;
+            letter-spacing: 2px;
+            background: linear-gradient(135deg, #3f5c6e, #c2a575, #e6c8a0);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            text-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            font-weight: 700;
+        }
+        .gallery-header p {
+            color: #2c3a35;
+            font-weight: 500;
+            background: rgba(250, 245, 230, 0.7);
+            backdrop-filter: blur(6px);
+            display: inline-block;
+            padding: 0.3rem 1.6rem;
+            border-radius: 48px;
+            margin-top: 0.8rem;
+            font-size: 1rem;
+        }
+
+        /* ========= 卡片網格 · 三層重疊版本 ========= */
+        .card-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(210px, 240px));
+            gap: 2rem;
+            justify-content: center;
+            max-width: 1300px;
+            margin: 0 auto;
+            position: relative;
+            z-index: 2;
+        }
+
+        /* 卡片容器 玻璃質感 */
+        .card-item {
+            position: relative;
+            background: rgba(255, 250, 240, 0.3);
+            backdrop-filter: blur(8px);
+            border-radius: 32px;
+            padding: 0.8rem 0.8rem 1rem;
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.2, 0.9, 0.4, 1.1);
+            box-shadow: 0 20px 28px -12px rgba(0,0,0,0.25);
+            border: 1px solid rgba(255,245,210,0.8);
+        }
+        .card-item:hover {
+            transform: translateY(-10px) scale(1.02);
+            background: rgba(255, 250, 240, 0.55);
+            backdrop-filter: blur(12px);
+            box-shadow: 0 30px 42px -12px rgba(0,0,0,0.4);
+            border-color: #ffefbf;
+        }
+
+        /* 三層重疊容器 9:16比例 */
+        .card-layers {
+            position: relative;
+            width: 100%;
+            aspect-ratio: 9 / 16;
+            border-radius: 24px;
+            overflow: hidden;
+            background: #cecfcf;
+            box-shadow: inset 0 0 0 1px rgba(255,245,200,0.4), 0 12px 20px -10px rgba(0,0,0,0.3);
+        }
+        .card-layer {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-size: cover;
+            background-position: center center;
+            background-repeat: no-repeat;
+            pointer-events: none;
+            transition: transform 0.2s ease;
+        }
+        /* 三層完全使用相同比例，不放大背景 */
+        .card-layer-bg {
+            background-size: cover;
+            z-index: 1;
+        }
+        .card-layer-mid {
+            background-size: cover;
+            z-index: 2;
+        }
+        .card-layer-border {
+            background-size: cover;
+            z-index: 3;
+            mix-blend-mode: normal;
+            filter: drop-shadow(0 1px 2px rgba(0,0,0,0.2));
+        }
+        .card-item:hover .card-layer-bg {
+            transform: scale(1.02);
+        }
+        .card-item:hover .card-layer-mid {
+            transform: scale(1.02);
+        }
+        .card-name {
+            text-align: center;
+            margin-top: 0.9rem;
+            font-weight: 600;
+            font-size: 1.18rem;
+            color: #2d2a24;
+            text-shadow: 0 1px 1px rgba(255,250,210,0.7);
+            letter-spacing: 1px;
+        }
+
+        /* ========= 預覽模態 ========= */
+        .preview-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(8, 12, 18, 0.85);
+            backdrop-filter: blur(14px);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            visibility: hidden;
+            opacity: 0;
+            transition: visibility 0.2s, opacity 0.3s ease;
+        }
+        .preview-overlay.active {
+            visibility: visible;
+            opacity: 1;
+        }
+
+        /* 預覽舞台 */
+        .preview-container {
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            max-width: 90vw;
+            max-height: 90vh;
+        }
+        .parallax-stage {
+            perspective: 1300px;
+            perspective-origin: 50% 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        .parallax-card {
+            position: relative;
+            width: min(58vw, 440px);
+            max-width: 440px;
+            aspect-ratio: 9 / 16;
+            border-radius: 36px;
+            overflow: hidden;
+            cursor: grab;
+            box-shadow: 0 40px 50px -18px rgba(0,0,0,0.7), 0 0 0 2px rgba(0,0,0,0.25);
+            transform-style: preserve-3d;
+            transition: box-shadow 0.2s;
+            will-change: transform;
+        }
+        .parallax-card:active {
+            cursor: grabbing;
+        }
+
+        /* 三層圖層 (預覽) — 移除背景放大效果，全部使用相同比例 */
+        .layer {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-size: cover;
+            background-position: center center;
+            background-repeat: no-repeat;
+            pointer-events: none;
+            will-change: transform;
+            backface-visibility: hidden;
+        }
+        .layer-bg {
+            background-size: cover;
+            z-index: 1;
+        }
+        .layer-mid {
+            background-size: cover;
+            z-index: 2;
+        }
+        .layer-border {
+            background-size: cover;
+            z-index: 3;
+            mix-blend-mode: normal;
+            filter: drop-shadow(0 2px 5px rgba(0,0,0,0.25));
+        }
+
+        /* 按鈕群組 */
+        .preview-actions {
+            display: flex;
+            gap: 1.2rem;
+            margin-top: 2rem;
+            justify-content: center;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+        .action-btn {
+            background: rgba(20, 25, 32, 0.85);
+            backdrop-filter: blur(18px);
+            border: 1px solid #cad6e3;
+            color: #fef3e0;
+            font-size: 1rem;
+            font-weight: 600;
+            padding: 8px 28px;
+            border-radius: 48px;
+            cursor: pointer;
+            transition: all 0.2s;
+            letter-spacing: 1px;
+            font-family: inherit;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+        }
+        .action-btn:hover {
+            background: #5f4c3b;
+            border-color: #f5cd94;
+            color: white;
+            transform: scale(1.02);
+        }
+        .download-btn {
+            background: rgba(45, 55, 68, 0.9);
+            border-color: #ddca9a;
+        }
+        .download-btn:hover {
+            background: #2f6b47;
+            border-color: #f9e2a4;
+        }
+
+        @media (max-width: 650px) {
+            body {
+                padding: 1rem;
+            }
+            .parallax-card {
+                width: 82vw;
+            }
+            .action-btn {
+                padding: 6px 22px;
+                font-size: 0.9rem;
+            }
+            .card-grid {
+                gap: 1.2rem;
+            }
+            .preview-actions {
+                margin-top: 1.4rem;
+            }
+        }
+
+        @keyframes subtleFloat {
+            0% { filter: brightness(1); }
+            100% { filter: brightness(1.01); }
+        }
+        .parallax-card {
+            animation: subtleFloat 3s infinite alternate;
+        }
+    </style>
+</head>
+<body>
+
+<div class="gallery-header">
+    <h1>✦ 林間小鎮交換繪 ✦</h1>
+    <p>點擊卡片可觀看視差效果 | 讚美化碳</p>
+</div>
+
+<div class="card-grid" id="cardGrid"></div>
+
+<!-- 預覽模態 -->
+<div id="previewOverlay" class="preview-overlay">
+    <div class="preview-container">
+        <div class="parallax-stage">
+            <div id="parallaxCard" class="parallax-card">
+                <div id="layerBg" class="layer layer-bg"></div>
+                <div id="layerMid" class="layer layer-mid"></div>
+                <div id="layerBorder" class="layer layer-border"></div>
+            </div>
+        </div>
+        <div class="preview-actions">
+            <button id="closePreviewBtn" class="action-btn">✕ 取消預覽</button>
+            <button id="downloadCardBtn" class="action-btn download-btn">⬇ 下載此卡片</button>
+        </div>
+    </div>
+</div>
+
+<script>
+    // ======================= 卡片資料庫 (9:16 三層獨立素材) =======================
+    const cardsData = [
+        {
+            name: "🌙 範例格式",
+            bgImg: "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABIAAAAgCAYAAAAffCjxAAAJxklEQVR4AQBJALb/AHK84f9xvOL/cLzj/2+95P9uveX/br7m/22+5/9tv+j/bb/o/27A6P9wwOf/csDm/3XA5f93v+T/er/i/3y/4f99v+D/fr/f/wBJALb/AHG84v9xvOL/cL3j/2+95P9uvuX/bb7n/22/6P9sv+j/bb/p/27A6P9wwOj/csDn/3TA5f93wOT/eb/i/3u/4f99v+D/fb/g/wBJALb/AHC84/9wveP/b73k/2695f9tvub/bL7n/2y/6P9sv+n/bMDp/23A6f9vwOn/ccDo/3PA5v92wOX/eMDj/3q/4v98v+H/fL/h/wBJALb/AG+95P9vveT/br3l/22+5v9svuf/a7/p/2q/6v9qwOr/a8Dr/2zA6/9twOr/cMDp/3LA6P90wOb/d8Dl/3nA4/96wOL/e8Di/wBJALb/AG295f9tvub/bL7n/2u+6P9qv+n/ab/q/2nA6/9pwOz/acHs/2rB7P9swev/bsHq/3DB6f9zwej/dcDm/3fA5f95wOT/ecDj/wBJALb/AGy+5/9rvuj/ar7o/2m/6v9ov+v/Z8Ds/2fA7f9nwe7/Z8Hu/2jB7v9qwu3/bMLs/27B6/9xwer/c8Ho/3XB5/93web/d8Hl/wBJALb/AGq/6f9pv+r/aL/r/2fA7P9mwO3/ZcHu/2XB7/9lwfD/ZcLw/2bC8P9owu//asLu/2zC7f9vwuz/ccLq/3PC6f90wej/dcHn/wBJALb/AGe/6/9nwOz/ZsDt/2XA7v9kwe//Y8Hw/2PC8f9jwvL/Y8Py/2TD8v9lw/L/aMPx/2rD7/9sw+7/b8Ls/3HC6/9ywur/c8Lq/wBJALb/AGXA7v9lwO7/ZMHv/2PB8P9iwvH/YcLy/2HD9P9gw/T/YcP1/2LE9P9jxPT/ZcTz/2jE8f9qw/D/bMPv/27D7f9ww+z/ccPs/wBJALb/AGPB8P9jwfD/YsHx/2HC8v9gwvP/X8P1/1/D9v9exPb/X8T3/2DE9/9hxPb/Y8T1/2bE9P9oxPL/asTx/2zE7/9uxO7/bsPu/wBJALb/AGLC8v9hwvL/YcLz/2DD9P9ew/X/XcT3/13E+P9dxPj/XcX5/17F+f9fxfj/YcX3/2TF9v9mxfT/aMXz/2rE8f9sxPH/bcTw/wBJALb/AGDC9P9gw/T/X8P1/17D9v9dxPf/XMT4/1vF+f9bxfr/W8b7/1zG+v9exvr/YMb5/2LG9/9lxfb/Z8X1/2nF8/9qxfL/a8Xy/wBJALb/AF/D9f9fw/X/XsT2/13E9/9cxPn/W8X6/1rF+/9axvz/Wsb8/1vG/P9dxvv/X8b6/2HG+f9jxvf/Zsb2/2jG9f9pxvT/asXz/wBJALb/AF/E9v9fxPf/XsT3/13F+P9cxfr/W8b7/1rG/P9axv3/Wsf9/1vH/f9cx/z/Xsf7/2DH+v9jx/n/Zcb3/2fG9v9oxvX/acb1/wBJALb/AF/E9/9fxPf/XsX4/13F+f9cxvr/W8b8/1rG/f9Zx/7/Wsf+/1vH/v9cx/3/Xsf8/2DH+/9ix/n/Zcf4/2fH9/9oxvb/acb1/wBJALb/AGDF9/9fxff/XsX4/13F+f9cxvv/W8b8/1rH/f9ax/7/Wsj+/1vI/v9cyP3/Xsj8/2HI+/9jx/r/Zcf4/2fH9/9ox/b/acf2/wBJALb/AGHF9/9gxff/YMX4/1/G+f9dxvv/XMf8/1vH/f9bx/7/W8j+/1zI/v9dyP3/X8j8/2HI+/9kyPr/Zsf4/2jH9/9px/b/asf1/wBJALb/AGPF9v9ixff/YcX4/2DG+f9fxvr/Xsf7/13H/P9dyP3/Xcj9/17I/f9fyP3/Ycj8/2PI+v9lyPn/Z8f3/2nH9v9rx/X/a8f1/wBJALb/AGXF9f9lxfb/ZMb2/2PG+P9hxvn/YMf6/1/H+/9fyPz/X8j8/2DI/P9hyPz/Y8j7/2XI+f9nyPj/asf2/2vH9f9tx/T/bcf0/wBJALb/AGjF9P9nxfT/ZsX1/2XG9v9kxvf/Y8f5/2LH+v9iyPv/Ysj7/2LI+/9kyPr/Zsj5/2jI+P9qyPb/bMf1/27H9P9vx/P/cMfy/wBJALb/AGvF8v9qxfL/asXz/2jG9P9nxvb/Zsf3/2XH+P9lx/n/Zcj5/2XI+f9nyPj/aMj3/2vI9v9tx/X/b8fz/3HH8v9yx/H/c8fx/wBJALb/AG7F8P9uxfD/bcXx/2zF8v9rxvP/acb1/2nH9v9ox/f/aMf3/2nI9/9qyPb/bMf1/27H9P9wx/P/csfx/3TH8P91xu//dsbv/wBJALb/AHLE7f9yxO7/ccXv/3DF8P9uxvH/bcby/2zG9P9sx/T/bMf1/2zH9f9ux/T/b8fz/3HH8v90x/D/dsbv/3fG7v95xu3/ecbs/wBJALb/AHbE6/91xOv/dcTs/3PF7f9yxe//ccbw/3DG8f9vxvL/b8fy/3DH8v9xx/L/c8fx/3XH7/93xu7/ecbt/3vG6/98xur/fcbq/wBJALb/AHrE6f95xOn/eMTq/3fE6/92xez/dcXu/3TG7/9zxu//c8bw/3TG8P91xu//d8bu/3nG7f97xuv/fcbq/3/F6f+Axej/gcXn/wBJALb/AH3D5v99w+f/fMTn/3vE6f95xOr/eMXr/3fF7P93xu3/d8bt/3fG7f94xu3/esbs/3zG6/9+xen/gMXo/4LF5v+Dxeb/hMXl/wBJALb/AIHD5P+Aw+T/f8Pl/37E5v99xOj/e8Tp/3rF6v96xev/esXr/3rG6/98xuv/fcXq/3/F6P+Bxef/g8Xl/4XF5P+HxOP/h8Tj/wBJALb/AITC4v+Dw+L/gsPj/4HD5P+AxOb/fsTn/33E6P99xen/fcXp/33F6f9/xen/gMXo/4LF5v+ExeX/hsTj/4jE4v+JxOH/isTh/wBJALb/AIbC4P+GwuH/hcPh/4TD4/+Cw+T/gcTl/4DE5v9/xOf/f8Xn/4DF5/+Bxef/g8Xm/4XF5f+HxOP/icTi/4rE4f+MxOD/jMTf/wBJALb/AIjC3/+Iwt//h8Lg/4XD4f+Ew+P/g8Tk/4LE5f+BxOb/gcTm/4LF5v+DxeX/hMXl/4bE4/+JxOL/i8Tg/4zE3/+Ow97/jsPe/wBJALb/AInC3v+Jwt7/iMLf/4fC4P+Fw+L/hMPj/4PE5P+DxOX/g8Tl/4PE5f+ExOX/hsTk/4jE4v+KxOH/jMTg/47D3v+Pw93/kMPd/wFJALb/AIrC3f+Kwt7/icLf/4jC4P+Gw+H/hcPi/4TE5P+DxOT/g8Tl/4TE5f+FxOT/hsTj/4jE4v+LxOD/jcTf/47D3v+Qw93/kMPc/7j5CDOlbPnRAAAAAElFTkSuQmCC",
+            midImg: "https://media.discordapp.net/attachments/597781871308570635/1513037596807139388/01.png?ex=6a264591&is=6a24f411&hm=92b4cd9c27c8cf717f204a93997dcba46969a54ed8bdc0f1fbdaf3415bd86dd6&=&format=webp&quality=lossless&width=518&height=921",
+            borderImg: "https://media.discordapp.net/attachments/597781871308570635/1513035105806061608/02.png?ex=6a264340&is=6a24f1c0&hm=bcefe3b9cba26b7308dc49a7f038ef9ccb622675d2dc8711cd761556a0abbbdd&=&format=webp&quality=lossless&width=437&height=777"
+        },
+        {
+            name: "🍃 森語精靈",
+            bgImg: "https://picsum.photos/id/15/900/1600",
+            midImg: "https://picsum.photos/id/127/600/1066",
+            borderImg: "https://www.transparenttextures.com/patterns/vintage-wallpaper.png"
+        },
+        {
+            name: "🔥 焰翼守護",
+            bgImg: "https://picsum.photos/id/29/900/1600",
+            midImg: "https://picsum.photos/id/77/600/1066",
+            borderImg: "https://www.transparenttextures.com/patterns/dark-mosaic.png"
+        },
+        {
+            name: "❄️ 霜晶女爵",
+            bgImg: "https://picsum.photos/id/42/900/1600",
+            midImg: "https://picsum.photos/id/35/600/1066",
+            borderImg: "https://www.transparenttextures.com/patterns/ice-crystal.png"
+        },
+        {
+            name: "⚡ 雷鳴武神",
+            bgImg: "https://picsum.photos/id/155/900/1600",
+            midImg: "https://picsum.photos/id/159/600/1066",
+            borderImg: "https://www.transparenttextures.com/patterns/lightning-bolt.png"
+        },
+        {
+            name: "💧 深淵祭司",
+            bgImg: "https://picsum.photos/id/18/900/1600",
+            midImg: "https://picsum.photos/id/22/600/1066",
+            borderImg: "https://www.transparenttextures.com/patterns/water-ripple.png"
+        }
+    ];
+
+    // DOM 元素
+    const gridContainer = document.getElementById('cardGrid');
+    const overlay = document.getElementById('previewOverlay');
+    const parallaxCard = document.getElementById('parallaxCard');
+    const layerBg = document.getElementById('layerBg');
+    const layerMid = document.getElementById('layerMid');
+    const layerBorder = document.getElementById('layerBorder');
+    const closeBtn = document.getElementById('closePreviewBtn');
+    const downloadBtn = document.getElementById('downloadCardBtn');
+
+    // 全域視差變量
+    let activeParallax = false;
+    let globalMouseMoveHandler = null;
+    let globalMouseLeaveHandler = null;
+    let touchGlobalHandler = null;
+    let currentCardIndex = 0;
+
+    // 重置圖層偏移 (移除所有位移和縮放)
+    function resetLayersTransform() {
+        if (layerBg) layerBg.style.transform = 'translate(0px, 0px)';
+        if (layerMid) layerMid.style.transform = 'translate(0px, 0px)';
+        if (layerBorder) layerBorder.style.transform = 'translate(0px, 0px)';
+    }
+    function resetCardRotation() {
+        if (parallaxCard) parallaxCard.style.transform = '';
+    }
+
+    // 全域滑鼠視差核心 (僅平移，無縮放)
+    function updateGlobalParallax(clientX, clientY) {
+        if (!activeParallax) return;
+        const winW = window.innerWidth;
+        const winH = window.innerHeight;
+        let xRatio = (clientX / winW) * 2 - 1;
+        let yRatio = (clientY / winH) * 2 - 1;
+        
+        // 位移上限 (較為收斂，視差優雅)
+        const maxBg = 28;
+        const maxMid = 18;
+        const maxBorder = 8;
+        
+        let bgX = xRatio * maxBg;
+        let bgY = yRatio * maxBg;
+        let midX = xRatio * maxMid;
+        let midY = yRatio * maxMid;
+        let borderX = xRatio * maxBorder;
+        let borderY = yRatio * maxBorder;
+        
+        layerBg.style.transform = `translate(${bgX}px, ${bgY}px)`;
+        layerMid.style.transform = `translate(${midX}px, ${midY}px)`;
+        layerBorder.style.transform = `translate(${borderX}px, ${borderY}px)`;
+        
+        // 輕微3D旋轉增加浮空感
+        const rotateY = xRatio * 3.5;
+        const rotateX = -yRatio * 3.0;
+        parallaxCard.style.transform = `perspective(1100px) rotateX(${rotateX}deg) rotateY(${rotateY}deg)`;
+    }
+    
+    function resetGlobalParallaxWithTransition() {
+        if (!activeParallax) return;
+        if (layerBg && layerMid && layerBorder) {
+            layerBg.style.transition = 'transform 0.27s cubic-bezier(0.2, 0.9, 0.3, 1.1)';
+            layerMid.style.transition = 'transform 0.27s cubic-bezier(0.2, 0.9, 0.3, 1.1)';
+            layerBorder.style.transition = 'transform 0.27s cubic-bezier(0.2, 0.9, 0.3, 1.1)';
+            resetLayersTransform();
+            if (parallaxCard) parallaxCard.style.transform = `perspective(1100px) rotateX(0deg) rotateY(0deg)`;
+            setTimeout(() => {
+                if (layerBg) layerBg.style.transition = '';
+                if (layerMid) layerMid.style.transition = '';
+                if (layerBorder) layerBorder.style.transition = '';
+            }, 280);
+        }
+    }
+    
+    function bindGlobalParallaxEvents() {
+        if (globalMouseMoveHandler) {
+            window.removeEventListener('mousemove', globalMouseMoveHandler);
+            window.removeEventListener('mouseleave', globalMouseLeaveHandler);
+        }
+        globalMouseMoveHandler = (e) => { if(activeParallax) updateGlobalParallax(e.clientX, e.clientY); };
+        globalMouseLeaveHandler = () => { if(activeParallax) resetGlobalParallaxWithTransition(); };
+        window.addEventListener('mousemove', globalMouseMoveHandler);
+        window.addEventListener('mouseleave', globalMouseLeaveHandler);
+    }
+    function unbindGlobalParallaxEvents() {
+        if (globalMouseMoveHandler) {
+            window.removeEventListener('mousemove', globalMouseMoveHandler);
+            window.removeEventListener('mouseleave', globalMouseLeaveHandler);
+            globalMouseMoveHandler = null;
+            globalMouseLeaveHandler = null;
+        }
+    }
+    
+    function bindTouchParallax() {
+        if (touchGlobalHandler) {
+            window.removeEventListener('touchmove', touchGlobalHandler);
+            window.removeEventListener('touchend', resetGlobalParallaxWithTransition);
+        }
+        touchGlobalHandler = (e) => {
+            if (!activeParallax) return;
+            if (e.touches.length) {
+                const touch = e.touches[0];
+                updateGlobalParallax(touch.clientX, touch.clientY);
+                e.preventDefault();
+            }
+        };
+        const onTouchEnd = () => { if(activeParallax) resetGlobalParallaxWithTransition(); };
+        window.addEventListener('touchmove', touchGlobalHandler, { passive: false });
+        window.addEventListener('touchend', onTouchEnd);
+        window.tempTouchEnd = onTouchEnd;
+    }
+    function unbindTouchParallax() {
+        if (touchGlobalHandler) {
+            window.removeEventListener('touchmove', touchGlobalHandler);
+            if (window.tempTouchEnd) window.removeEventListener('touchend', window.tempTouchEnd);
+            touchGlobalHandler = null;
+        }
+    }
+    
+    // 更新預覽三層圖片
+    function updatePreviewLayers(index) {
+        const data = cardsData[index];
+        if (!data) return;
+        layerBg.style.backgroundImage = `url('${data.bgImg}')`;
+        layerMid.style.backgroundImage = `url('${data.midImg}')`;
+        layerBorder.style.backgroundImage = `url('${data.borderImg}')`;
+        if (parallaxCard) parallaxCard.style.boxShadow = "0 40px 50px -18px rgba(0,0,0,0.7), 0 0 0 2px rgba(0,0,0,0.25)";
+        resetLayersTransform();
+        resetCardRotation();
+    }
+    
+    // 下載卡片 (保持原有功能，但移除放大效果)
+    async function downloadCardAsImage(index) {
+        const card = cardsData[index];
+        if (!card) return;
+        const width = 900;
+        const height = (width * 16) / 9;
+        const canvas = document.createElement('canvas');
+        canvas.width = width;
+        canvas.height = height;
+        const ctx = canvas.getContext('2d');
+        
+        function loadImage(src) {
+            return new Promise((resolve, reject) => {
+                const img = new Image();
+                img.crossOrigin = "Anonymous";
+                img.onload = () => resolve(img);
+                img.onerror = reject;
+                img.src = src;
+            });
+        }
+        
+        try {
+            const bgImg = await loadImage(card.bgImg);
+            const midImg = await loadImage(card.midImg);
+            const borderImg = await loadImage(card.borderImg);
+            
+            ctx.drawImage(bgImg, 0, 0, width, height);
+            ctx.drawImage(midImg, 0, 0, width, height);
+            ctx.drawImage(borderImg, 0, 0, width, height);
+            
+            ctx.save();
+            ctx.strokeStyle = "rgba(220,200,140,0.5)";
+            ctx.lineWidth = 6;
+            ctx.strokeRect(4, 4, width-8, height-8);
+            ctx.restore();
+            
+            const link = document.createElement('a');
+            link.download = `card_${card.name.replace(/[^a-z0-9]/gi, '_')}.png`;
+            link.href = canvas.toDataURL('image/png');
+            link.click();
+        } catch (err) {
+            console.warn(err);
+            alert("圖片跨域限制無法完整合成，但仍可手動截圖。");
+        }
+    }
+    
+    function openPreview(index) {
+        currentCardIndex = index;
+        updatePreviewLayers(index);
+        overlay.classList.add('active');
+        document.body.style.overflow = 'hidden';
+        activeParallax = true;
+        bindGlobalParallaxEvents();
+        bindTouchParallax();
+        resetGlobalParallaxWithTransition();
+        parallaxCard.style.animation = 'subtleFloat 3s infinite alternate';
+    }
+    
+    function closePreview() {
+        overlay.classList.remove('active');
+        document.body.style.overflow = '';
+        activeParallax = false;
+        unbindGlobalParallaxEvents();
+        unbindTouchParallax();
+        resetLayersTransform();
+        if (parallaxCard) {
+            parallaxCard.style.transform = '';
+            parallaxCard.style.boxShadow = "0 40px 50px -18px rgba(0,0,0,0.7), 0 0 0 2px rgba(0,0,0,0.25)";
+        }
+        if (layerBg) layerBg.style.transition = '';
+        if (layerMid) layerMid.style.transition = '';
+        if (layerBorder) layerBorder.style.transition = '';
+    }
+    
+    // 渲染網格 (三層完全重疊，比例一致)
+    function renderGridWithOverlap() {
+        gridContainer.innerHTML = '';
+        cardsData.forEach((card, idx) => {
+            const cardDiv = document.createElement('div');
+            cardDiv.className = 'card-item';
+            
+            const layersContainer = document.createElement('div');
+            layersContainer.className = 'card-layers';
+            
+            const bgLayer = document.createElement('div');
+            bgLayer.className = 'card-layer card-layer-bg';
+            bgLayer.style.backgroundImage = `url('${card.bgImg}')`;
+            
+            const midLayer = document.createElement('div');
+            midLayer.className = 'card-layer card-layer-mid';
+            midLayer.style.backgroundImage = `url('${card.midImg}')`;
+            
+            const borderLayer = document.createElement('div');
+            borderLayer.className = 'card-layer card-layer-border';
+            borderLayer.style.backgroundImage = `url('${card.borderImg}')`;
+            
+            layersContainer.appendChild(bgLayer);
+            layersContainer.appendChild(midLayer);
+            layersContainer.appendChild(borderLayer);
+            
+            const nameSpan = document.createElement('div');
+            nameSpan.className = 'card-name';
+            nameSpan.innerText = card.name;
+            
+            cardDiv.appendChild(layersContainer);
+            cardDiv.appendChild(nameSpan);
+            cardDiv.addEventListener('click', (e) => {
+                e.stopPropagation();
+                openPreview(idx);
+            });
+            gridContainer.appendChild(cardDiv);
+        });
+    }
+    
+    function init() {
+        renderGridWithOverlap();
+        closeBtn.addEventListener('click', closePreview);
+        downloadBtn.addEventListener('click', () => {
+            if (overlay.classList.contains('active')) {
+                downloadCardAsImage(currentCardIndex);
+            }
+        });
+        overlay.addEventListener('click', (e) => {
+            if (e.target === overlay) closePreview();
+        });
+        layerBg.style.backgroundPosition = "center center";
+        layerMid.style.backgroundPosition = "center center";
+        layerBorder.style.backgroundPosition = "center center";
+        console.log("三層圖鑑啟動 — 背景不再略大，三層比例一致精準疊合");
+    }
+    
+    init();
+</script>
+</body>
+</html>
