@@ -341,40 +341,40 @@
     // ======================= 卡片資料庫 (9:16 三層獨立素材) =======================
     const cardsData = [
         {
-            name: "🌙 範例格式",
-            bgImg: "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABIAAAAgCAYAAAAffCjxAAAJxklEQVR4AQBJALb/AHK84f9xvOL/cLzj/2+95P9uveX/br7m/22+5/9tv+j/bb/o/27A6P9wwOf/csDm/3XA5f93v+T/er/i/3y/4f99v+D/fr/f/wBJALb/AHG84v9xvOL/cL3j/2+95P9uvuX/bb7n/22/6P9sv+j/bb/p/27A6P9wwOj/csDn/3TA5f93wOT/eb/i/3u/4f99v+D/fb/g/wBJALb/AHC84/9wveP/b73k/2695f9tvub/bL7n/2y/6P9sv+n/bMDp/23A6f9vwOn/ccDo/3PA5v92wOX/eMDj/3q/4v98v+H/fL/h/wBJALb/AG+95P9vveT/br3l/22+5v9svuf/a7/p/2q/6v9qwOr/a8Dr/2zA6/9twOr/cMDp/3LA6P90wOb/d8Dl/3nA4/96wOL/e8Di/wBJALb/AG295f9tvub/bL7n/2u+6P9qv+n/ab/q/2nA6/9pwOz/acHs/2rB7P9swev/bsHq/3DB6f9zwej/dcDm/3fA5f95wOT/ecDj/wBJALb/AGy+5/9rvuj/ar7o/2m/6v9ov+v/Z8Ds/2fA7f9nwe7/Z8Hu/2jB7v9qwu3/bMLs/27B6/9xwer/c8Ho/3XB5/93web/d8Hl/wBJALb/AGq/6f9pv+r/aL/r/2fA7P9mwO3/ZcHu/2XB7/9lwfD/ZcLw/2bC8P9owu//asLu/2zC7f9vwuz/ccLq/3PC6f90wej/dcHn/wBJALb/AGe/6/9nwOz/ZsDt/2XA7v9kwe//Y8Hw/2PC8f9jwvL/Y8Py/2TD8v9lw/L/aMPx/2rD7/9sw+7/b8Ls/3HC6/9ywur/c8Lq/wBJALb/AGXA7v9lwO7/ZMHv/2PB8P9iwvH/YcLy/2HD9P9gw/T/YcP1/2LE9P9jxPT/ZcTz/2jE8f9qw/D/bMPv/27D7f9ww+z/ccPs/wBJALb/AGPB8P9jwfD/YsHx/2HC8v9gwvP/X8P1/1/D9v9exPb/X8T3/2DE9/9hxPb/Y8T1/2bE9P9oxPL/asTx/2zE7/9uxO7/bsPu/wBJALb/AGLC8v9hwvL/YcLz/2DD9P9ew/X/XcT3/13E+P9dxPj/XcX5/17F+f9fxfj/YcX3/2TF9v9mxfT/aMXz/2rE8f9sxPH/bcTw/wBJALb/AGDC9P9gw/T/X8P1/17D9v9dxPf/XMT4/1vF+f9bxfr/W8b7/1zG+v9exvr/YMb5/2LG9/9lxfb/Z8X1/2nF8/9qxfL/a8Xy/wBJALb/AF/D9f9fw/X/XsT2/13E9/9cxPn/W8X6/1rF+/9axvz/Wsb8/1vG/P9dxvv/X8b6/2HG+f9jxvf/Zsb2/2jG9f9pxvT/asXz/wBJALb/AF/E9v9fxPf/XsT3/13F+P9cxfr/W8b7/1rG/P9axv3/Wsf9/1vH/f9cx/z/Xsf7/2DH+v9jx/n/Zcb3/2fG9v9oxvX/acb1/wBJALb/AF/E9/9fxPf/XsX4/13F+f9cxvr/W8b8/1rG/f9Zx/7/Wsf+/1vH/v9cx/3/Xsf8/2DH+/9ix/n/Zcf4/2fH9/9oxvb/acb1/wBJALb/AGDF9/9fxff/XsX4/13F+f9cxvv/W8b8/1rH/f9ax/7/Wsj+/1vI/v9cyP3/Xsj8/2HI+/9jx/r/Zcf4/2fH9/9ox/b/acf2/wBJALb/AGHF9/9gxff/YMX4/1/G+f9dxvv/XMf8/1vH/f9bx/7/W8j+/1zI/v9dyP3/X8j8/2HI+/9kyPr/Zsf4/2jH9/9px/b/asf1/wBJALb/AGPF9v9ixff/YcX4/2DG+f9fxvr/Xsf7/13H/P9dyP3/Xcj9/17I/f9fyP3/Ycj8/2PI+v9lyPn/Z8f3/2nH9v9rx/X/a8f1/wBJALb/AGXF9f9lxfb/ZMb2/2PG+P9hxvn/YMf6/1/H+/9fyPz/X8j8/2DI/P9hyPz/Y8j7/2XI+f9nyPj/asf2/2vH9f9tx/T/bcf0/wBJALb/AGjF9P9nxfT/ZsX1/2XG9v9kxvf/Y8f5/2LH+v9iyPv/Ysj7/2LI+/9kyPr/Zsj5/2jI+P9qyPb/bMf1/27H9P9vx/P/cMfy/wBJALb/AGvF8v9qxfL/asXz/2jG9P9nxvb/Zsf3/2XH+P9lx/n/Zcj5/2XI+f9nyPj/aMj3/2vI9v9tx/X/b8fz/3HH8v9yx/H/c8fx/wBJALb/AG7F8P9uxfD/bcXx/2zF8v9rxvP/acb1/2nH9v9ox/f/aMf3/2nI9/9qyPb/bMf1/27H9P9wx/P/csfx/3TH8P91xu//dsbv/wBJALb/AHLE7f9yxO7/ccXv/3DF8P9uxvH/bcby/2zG9P9sx/T/bMf1/2zH9f9ux/T/b8fz/3HH8v90x/D/dsbv/3fG7v95xu3/ecbs/wBJALb/AHbE6/91xOv/dcTs/3PF7f9yxe//ccbw/3DG8f9vxvL/b8fy/3DH8v9xx/L/c8fx/3XH7/93xu7/ecbt/3vG6/98xur/fcbq/wBJALb/AHrE6f95xOn/eMTq/3fE6/92xez/dcXu/3TG7/9zxu//c8bw/3TG8P91xu//d8bu/3nG7f97xuv/fcbq/3/F6f+Axej/gcXn/wBJALb/AH3D5v99w+f/fMTn/3vE6f95xOr/eMXr/3fF7P93xu3/d8bt/3fG7f94xu3/esbs/3zG6/9+xen/gMXo/4LF5v+Dxeb/hMXl/wBJALb/AIHD5P+Aw+T/f8Pl/37E5v99xOj/e8Tp/3rF6v96xev/esXr/3rG6/98xuv/fcXq/3/F6P+Bxef/g8Xl/4XF5P+HxOP/h8Tj/wBJALb/AITC4v+Dw+L/gsPj/4HD5P+AxOb/fsTn/33E6P99xen/fcXp/33F6f9/xen/gMXo/4LF5v+ExeX/hsTj/4jE4v+JxOH/isTh/wBJALb/AIbC4P+GwuH/hcPh/4TD4/+Cw+T/gcTl/4DE5v9/xOf/f8Xn/4DF5/+Bxef/g8Xm/4XF5f+HxOP/icTi/4rE4f+MxOD/jMTf/wBJALb/AIjC3/+Iwt//h8Lg/4XD4f+Ew+P/g8Tk/4LE5f+BxOb/gcTm/4LF5v+DxeX/hMXl/4bE4/+JxOL/i8Tg/4zE3/+Ow97/jsPe/wBJALb/AInC3v+Jwt7/iMLf/4fC4P+Fw+L/hMPj/4PE5P+DxOX/g8Tl/4PE5f+ExOX/hsTk/4jE4v+KxOH/jMTg/47D3v+Pw93/kMPd/wFJALb/AIrC3f+Kwt7/icLf/4jC4P+Gw+H/hcPi/4TE5P+DxOT/g8Tl/4TE5f+FxOT/hsTj/4jE4v+LxOD/jcTf/47D3v+Qw93/kMPc/7j5CDOlbPnRAAAAAElFTkSuQmCC",
-            midImg: "https://media.discordapp.net/attachments/597781871308570635/1513037596807139388/01.png?ex=6a264591&is=6a24f411&hm=92b4cd9c27c8cf717f204a93997dcba46969a54ed8bdc0f1fbdaf3415bd86dd6&=&format=webp&quality=lossless&width=518&height=921",
-            borderImg: "https://media.discordapp.net/attachments/597781871308570635/1513035105806061608/02.png?ex=6a264340&is=6a24f1c0&hm=bcefe3b9cba26b7308dc49a7f038ef9ccb622675d2dc8711cd761556a0abbbdd&=&format=webp&quality=lossless&width=437&height=777"
+        name: "化碳|時間女武神",
+        bgImg: "交換繪/化碳/background.png",
+        midImg: "交換繪/化碳/subject.png",
+        borderImg: "交換繪/化碳/frame.png"
         },
         {
-            name: "🍃 森語精靈",
-            bgImg: "https://picsum.photos/id/15/900/1600",
-            midImg: "https://picsum.photos/id/127/600/1066",
-            borderImg: "https://www.transparenttextures.com/patterns/vintage-wallpaper.png"
+            name: "貓薄荷|深淵猫娘",
+            bgImg: "交換繪/貓薄荷/background.png",
+            midImg: "交換繪/貓薄荷/subject.png",
+            borderImg: "交換繪/貓薄荷/frame.png"
         },
         {
-            name: "🔥 焰翼守護",
-            bgImg: "https://picsum.photos/id/29/900/1600",
-            midImg: "https://picsum.photos/id/77/600/1066",
-            borderImg: "https://www.transparenttextures.com/patterns/dark-mosaic.png"
+            name: "Salmøn|黑洞學者",
+            bgImg: "交換繪/Salmøn/background.png",
+            midImg: "交換繪/Salmøn/subject.png",
+            borderImg: "交換繪/Salmøn/frame.png"
         },
         {
-            name: "❄️ 霜晶女爵",
-            bgImg: "https://picsum.photos/id/42/900/1600",
-            midImg: "https://picsum.photos/id/35/600/1066",
-            borderImg: "https://www.transparenttextures.com/patterns/ice-crystal.png"
+            name: "unknow",
+            bgImg: "交換繪/unknow/background.png",
+            midImg: "交換繪/unknow/subject.png",
+            borderImg: "交換繪/unknow/frame.png"
         },
         {
-            name: "⚡ 雷鳴武神",
-            bgImg: "https://picsum.photos/id/155/900/1600",
-            midImg: "https://picsum.photos/id/159/600/1066",
-            borderImg: "https://www.transparenttextures.com/patterns/lightning-bolt.png"
+            name: "unknow",
+            bgImg: "交換繪/unknow/background.png",
+            midImg: "交換繪/unknow/subject.png",
+            borderImg: "交換繪/unknow/frame.png"
         },
         {
-            name: "💧 深淵祭司",
-            bgImg: "https://picsum.photos/id/18/900/1600",
-            midImg: "https://picsum.photos/id/22/600/1066",
-            borderImg: "https://www.transparenttextures.com/patterns/water-ripple.png"
+            name: "unknow",
+            bgImg: "交換繪/unknow/background.png",
+            midImg: "交換繪/unknow/subject.png",
+            borderImg: "交換繪/unknow/frame.png"
         }
     ];
 
@@ -414,9 +414,9 @@
         let yRatio = (clientY / winH) * 2 - 1;
         
         // 位移上限 (較為收斂，視差優雅)
-        const maxBg = 28;
+        const maxBg = 8;
         const maxMid = 18;
-        const maxBorder = 8;
+        const maxBorder = 28;
         
         let bgX = xRatio * maxBg;
         let bgY = yRatio * maxBg;
